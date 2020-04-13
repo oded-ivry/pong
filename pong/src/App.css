@@ -1,0 +1,20 @@
+.App {
+  /* border: red 2px solid; */
+  background-color: #282c34;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  height: 99.6vh;
+  font-size: calc(10px + 2vmin);
+  font-family: 'Press Start 2P', cursive;
+}
+
+.App-header {
+  display: flex;
+  height:10vh;
+  /* border: green 2px solid; */
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 30px;
+}

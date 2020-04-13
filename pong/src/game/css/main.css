@@ -1,0 +1,59 @@
+@import "reset.css";
+
+
+body {
+    background-color: #000000;
+    font-family: fantasy; 
+}
+
+.menuPage {
+    display: flex;
+    border: rgb(173, 6, 6) solid 3px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: center;
+    height:100vh;
+}
+
+.gameTitle {
+    flex-basis: 100%;
+    border: deeppink solid 2px;
+    /* color: honeydew; */
+    background: -webkit-linear-gradient(rgb(255, 238, 4), rgb(187, 3, 3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 8vw;
+    text-align: center;
+}
+
+.menu {
+    display: flex;
+    border: rgb(12, 255, 194) solid 2px;
+    flex-direction: column;
+    flex-basis: 100%;
+    color: honeydew;
+    font-size: 3vw;
+    text-align: center;
+    min-height: 60vh;
+    justify-content: space-evenly;
+
+
+}
+
+.menuItem{
+    text-align: center;
+    color: honeydew;
+    border: green solid 2px;
+}
+.menuItem:hover {
+    text-align: center;
+    color: honeydew;
+    border: green solid 2px;
+    font-size: 4vw;
+    background: -webkit-linear-gradient(rgb(255, 238, 4), rgb(187, 3, 3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
