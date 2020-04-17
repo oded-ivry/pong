@@ -1,12 +1,19 @@
 import Ball from './Ball';
 import Player from './Player';
-// import React from 'react';
- 
-class Game {
-    isPc = false;
-    isUser = true;
-    
-    constructor() {
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import App from '../App';
+
+const ISPC = false;
+const ISUSER = true;
+
+class Game extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+        
+
+        }
         //singleton
         if(Game.instance) {
             return Game.instance;
@@ -29,8 +36,8 @@ class Game {
     
     start() {
         this.ball = new Ball();
-        this.pc = new Player(this.isPc);
-        this.user = new Player(this.isUser);
+        this.pc = new Player(ISPC);
+        this.user = new Player(ISUSER);
         window.requestAnimationFrame(this.drawGame.bind(this));
     }
     
@@ -98,12 +105,18 @@ class Game {
         
         if (this.checkEndGame() === 'right'){
             console.log('right lost');
-            // alert('right lost');
-            // document.location.reload();
+            window.cancelAnimationFrame(this.drawGame.bind(this));
+            ReactDOM.render(
+                <App />,
+              document.getElementById('root')
+            );
         }else if (this.checkEndGame() === 'left'){
             console.log('left lost');
-            // alert('left lost');
-            // document.location.reload();
+            window.cancelAnimationFrame(this.drawGame.bind(this));
+            ReactDOM.render(
+                <App />,
+              document.getElementById('root')
+            );
         }
         window.requestAnimationFrame(this.drawGame.bind(this));
     }

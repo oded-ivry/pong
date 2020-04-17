@@ -1,7 +1,7 @@
 // import Player from './Player';
 
 class Ball {
-    raduis = 35;
+    raduis = 25;
 
     constructor() {
         //singleton
