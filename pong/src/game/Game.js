@@ -113,10 +113,7 @@ class Game extends Component{
         }else if (this.checkEndGame() === 'left'){
             console.log('left lost');
             window.cancelAnimationFrame(this.drawGame.bind(this));
-            ReactDOM.render(
-                <App />,
-              document.getElementById('root')
-            );
+            window.location.reload();
         }
         window.requestAnimationFrame(this.drawGame.bind(this));
     }
