@@ -8,7 +8,7 @@ function Multi() {
     return (
         <Page>
             <Title>Multi Player</Title>
-            <Form action='/action_page.php' target='_blank'>
+            <Form>
                 <Label>1st player's name:<FormItemInput type='text' id='fpName'/></Label>
                 <Label>2nd player's name:<FormItemInput type='text' id='spName'/></Label>
                 <Label>1st player's speed:<FormItemInput type='number' min="1" max="10" id='fpSpeed'/></Label>

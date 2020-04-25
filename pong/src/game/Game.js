@@ -2,6 +2,7 @@ import Ball from './Ball';
 import Player from './Player';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import styled from 'styled-components';
 import App from '../App';
 
 const ISPC = false;
@@ -23,13 +24,13 @@ class Game extends Component{
         //field
         this.canvas = document.getElementById("canvas");
         this.ctxt = this.canvas.getContext('2d');
-        this.canvas.width = document.body.clientWidth;
-        this.canvas.height = window.innerHeight - 20;
+        this.canvas.width = document.body.clientWidth*0.7;
+        this.canvas.height = (window.innerHeight )*0.7;
         this.halfLinePos = this.canvas.width / 2;
         
         window.addEventListener('resize', () => {
-            this.canvas.width = document.body.clientWidth;
-            this.canvas.height = window.innerHeight - 20;
+            this.canvas.width = document.body.clientWidth*0.7;
+            this.canvas.height = (window.innerHeight )*0.7;
             }
         );
     }
@@ -83,7 +84,7 @@ class Game extends Component{
         //draw field
         this.ctxt.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctxt.fillStyle = 'black';
-        this.ctxt.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctxt.fillRect(0,0, this.canvas.width, this.canvas.height);
         this.ctxt.fillStyle = 'white';
         this.ctxt.fillRect(this.halfLinePos, 0, 7, this.canvas.height);
         
@@ -117,6 +118,17 @@ class Game extends Component{
         }
         window.requestAnimationFrame(this.drawGame.bind(this));
     }
+    
+    render(){
+        return(
+            <Canvas/>
+        )
+    };
 }
-
 export default Game;
+
+const Canvas = styled.canvas`
+    position:relative;
+    // top:10px;
+    // left:10px;
+`;

@@ -1,23 +1,48 @@
-import React from 'react';
+import React, { createElement } from 'react';
 import { Link } from "react-router-dom";
 import styled from 'styled-components';
-import startGame from './game/index.js';
+import Game from '../src/game/Game';
+// import startGame from './game/index.js';
 
-function Single() {
-  const uSpeed = document.getElementById("uSpeed");
-  const pcSpeed = document.getElementById("pcSpeed");
+var gameOn = false;
+
+function startGame(){
+ gameOn = true;
+}
+
+function Pager() {
   return (
-        <Page>
-            <Title>Single Player</Title>
-            <Form action='/action_page.php' target='_blank'>
-                <Label>Name:<FormItemInput type='text' id='name'/></Label>
-                <Label>User speed:<FormItemInput type='number' min="1" max="10" id='uSpeed'/></Label>
-                <Label>PC speed:<FormItemInput type='number' min="1" max="10" id='pcSpeed'/></Label>
-            </Form>
-            <PlyButton onClick={(props) => startGame()}>Play!</PlyButton>
-            <StyledLink to="/play">Back</StyledLink>
-        </Page>
+    <Page>
+        <Title>Single Player</Title>
+        <Form>
+            <Label>Name:<FormItemInput type='text' id='name'/></Label>
+            <Label>User speed:<FormItemInput type='number' min="1" max="10" id='uSpeed'/></Label>
+            <Label>PC speed:<FormItemInput type='number' min="1" max="10" id='pcSpeed'/></Label>
+        </Form>
+        <PlyButton onClick={() => startGame()}>Play!</PlyButton>
+         <StyledLink to="/play">Back</StyledLink>
+    </Page>
+);
+}
+
+function  GameArea() {
+  setTimeout(() => new Game().start(), 1500);
+  return(
+    <Canvas  id="canvas"/>
     );
+  
+}
+  
+function Single() {
+  if (!gameOn){
+    return(
+      GameArea()
+    );
+  }else{
+    return(
+      Pager()
+    );
+  }
 }
 export default Single;
 
@@ -72,4 +97,10 @@ const PlyButton = styled.button`
   &:hover {
     font-size: calc(20px + 2vmin);;
   }
+`;
+const Canvas = styled.canvas`
+    position: absolute;
+    border:solid deepPink 3px;
+    top: 20%;
+    left: 15%;
 `;
