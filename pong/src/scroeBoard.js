@@ -6,7 +6,7 @@ function ScroeBoard() {
     return (
         <Page>
             <Title>ScroeBoard</Title>
-            <StyledLink to="/main">Back</StyledLink>
+            <StyledLink to="/">Back</StyledLink>
         </Page>
     );
   }

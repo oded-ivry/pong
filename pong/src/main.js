@@ -1,8 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 
-export default () => (
+const Main = () => {
+  let history = useHistory();
+
+  window.addEventListener("keydown", event => {
+    if(event.keyCode === 27){
+       history.push("/");
+    }
+  });
+
+  return(
     <Page>
       <Title>Main Menu</Title>
       <Menu>
@@ -15,8 +24,10 @@ export default () => (
       </Menu>
     </Page>
   );
+};
+export default Main;
 
-  const Page = styled.div`
+const Page = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;

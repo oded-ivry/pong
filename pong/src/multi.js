@@ -1,23 +1,54 @@
 import React from 'react';
 import { Link} from "react-router-dom";
 import styled from 'styled-components';
-import startGame from './game/index.js';
+import Game from '../src/game/Game';
+import Counter from './game/Counter';
+
+var gameOn = false;
+
+function startGame(){
+ gameOn = true;
+}
+
+function Pager() {
+  return (
+      <Page>
+          <Title>Multi Player</Title>
+          <Form>
+              <Label>1st player's name:<FormItemInput type='text' id='fpName'/></Label>
+              <Label>2nd player's name:<FormItemInput type='text' id='spName'/></Label>
+              <Label>1st player's speed:<FormItemInput type='number' min="1" max="10" id='fpSpeed'/></Label>
+              <Label>2nd player's speed:<FormItemInput type='number' min="1" max="10" id='spSpeed'/></Label>
+          </Form>
+          <PlyButton onClick={() => startGame()}>Play!</PlyButton>
+          <StyledLink to="/play">Back</StyledLink>
+      </Page>
+  );
+}
+
+function  GameArea() {
+  setTimeout(() => new Game().start(), 1500);
+  return(
+    <div>
+    <Canvas  id="canvas"/>
+    <Counter/>
+    {/* <Counter/> */}
+    </div>
+    );
+  
+  
+}
 
 function Multi() {
-
-    return (
-        <Page>
-            <Title>Multi Player</Title>
-            <Form>
-                <Label>1st player's name:<FormItemInput type='text' id='fpName'/></Label>
-                <Label>2nd player's name:<FormItemInput type='text' id='spName'/></Label>
-                <Label>1st player's speed:<FormItemInput type='number' min="1" max="10" id='fpSpeed'/></Label>
-                <Label>2nd player's speed:<FormItemInput type='number' min="1" max="10" id='spSpeed'/></Label>
-            </Form>
-            <PlyButton onClick={() => startGame()}>Play!</PlyButton>
-            <StyledLink to="/play">Back</StyledLink>
-        </Page>
+  if (!gameOn){
+    return(
+      GameArea()
     );
+  }else{
+    return(
+      Pager()
+    );
+  }
 }
 export default Multi;
 
@@ -72,4 +103,11 @@ const PlyButton = styled.button`
   &:hover {
     font-size: calc(20px + 2vmin);;
   }
+`;
+
+const Canvas = styled.canvas`
+    position: absolute;
+    border:solid deepPink 3px;
+    top: 20%;
+    left: 15%;
 `;

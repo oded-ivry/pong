@@ -2,7 +2,11 @@ import React, { createElement } from 'react';
 import { Link } from "react-router-dom";
 import styled from 'styled-components';
 import Game from '../src/game/Game';
-// import startGame from './game/index.js';
+import { useForm } from "react-hook-form";
+import { error_messages } from './Error_messages/Error_Messages';
+// import Counter from './game/Counter';
+
+
 
 var gameOn = false;
 
@@ -11,15 +15,85 @@ function startGame(){
 }
 
 function Pager() {
+  const { register, handleSubmit, errors, field_name } = useForm();
+
+  const get_error_msg = (errors, error_messages) => {
+    const generate = name => {
+      if (errors[name]) {
+        switch (errors[name].type) {
+          case "required":
+            return error_messages[name].required;
+          case "minLength":
+            return error_messages[name].minLength;
+          case "minSpeed":
+            return error_messages[name].min;
+          default:
+            return "";
+        }
+      }
+    };
+
+    if (Array.isArray(field_name)) {
+      for (const name of field_name) {
+        const msg = generate(name);
+        if (msg) return msg;
+      }
+    } else {
+      return generate(field_name);
+    }
+  }
+
+  const onSubmit = data => {
+    console.log(data);
+    // startGame();
+  };
+  
   return (
     <Page>
         <Title>Single Player</Title>
-        <Form>
-            <Label>Name:<FormItemInput type='text' id='name'/></Label>
-            <Label>User speed:<FormItemInput type='number' min="1" max="10" id='uSpeed'/></Label>
-            <Label>PC speed:<FormItemInput type='number' min="1" max="10" id='pcSpeed'/></Label>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+            <Label>First Name:<FormItemInput 
+                                name="first_name"
+                                placeholder="First name"
+                                ref={register({ required: true, minLength: 2 })}
+                                error_styled={errors.first_name}
+                                onChange={handleSubmit()}/>
+            </Label>
+            <ErrorMsg show={errors.first_name}>
+              {get_error_msg(errors, error_messages, "first_name")}
+            </ErrorMsg>
+            <Label>Last Name:<FormItemInput
+                                name="last_name" 
+                                placeholder="Last name"
+                                ref={register({ required: true, minLength: 2 })}
+                                error_styled={errors.first_name}
+                                onChange={handleSubmit()}/>
+            </Label>
+            <ErrorMsg show={errors.last_name}>
+              {get_error_msg(errors, error_messages, "last_name")}
+            </ErrorMsg>
+            <Label>User speed:<FormItemInput 
+                                name="minSpeed" 
+                                placeholder="Positive numbers only"
+                                ref={register({ required: true, min: 1 })}
+                                error_styled={errors.minSpeed}
+                                onChange={handleSubmit()}/>
+            </Label>
+            <ErrorMsg show={errors.minSpeed}>
+              {get_error_msg(errors, error_messages, "minSpeed")}
+            </ErrorMsg>
+            <Label>PC speed:<FormItemInput 
+                                name="minSpeed" 
+                                placeholder="Positive numbers only"
+                                ref={register({ required: true, min: 1 })}
+                                error_styled={errors.minSpeed}
+                                onChange={handleSubmit()}/>
+            </Label>
+            <ErrorMsg show={errors.minSpeed}>
+              {get_error_msg(errors, error_messages, "minSpeed")}
+            </ErrorMsg>
         </Form>
-        <PlyButton onClick={() => startGame()}>Play!</PlyButton>
+        <PlyButton  type="submit"/* onClick={() => startGame()} */>Play!</PlyButton>
          <StyledLink to="/play">Back</StyledLink>
     </Page>
 );
@@ -28,13 +102,17 @@ function Pager() {
 function  GameArea() {
   setTimeout(() => new Game().start(), 1500);
   return(
+    <div>
     <Canvas  id="canvas"/>
+    {/* <Counter/>
+    <Counter/> */}
+    </div>
     );
   
 }
   
 function Single() {
-  if (!gameOn){
+  if (gameOn){
     return(
       GameArea()
     );
@@ -104,3 +182,6 @@ const Canvas = styled.canvas`
     top: 20%;
     left: 15%;
 `;
+const ErrorMsg  =styled(Label)`
+  color: red;
+`

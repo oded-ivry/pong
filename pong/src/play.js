@@ -15,7 +15,7 @@ const Play = () => {
             <StyledLink to="/online">Online</StyledLink>
         </MenuItem>
         <MenuItem>
-            <StyledLink to="/main">Back</StyledLink>
+            <StyledLink to="/">Back</StyledLink>
         </MenuItem>
       </Menu>
     );
