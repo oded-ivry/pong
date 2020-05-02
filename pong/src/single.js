@@ -1,4 +1,4 @@
-import React, { createElement } from 'react';
+import React/*,  { createElement } */ from 'react';
 import { Link } from "react-router-dom";
 import styled from 'styled-components';
 import Game from '../src/game/Game';
@@ -10,9 +10,9 @@ import { error_messages } from './Error_messages/Error_Messages';
 
 var gameOn = false;
 
-function startGame(){
+/* function startGame(){
  gameOn = true;
-}
+} */
 
 function Pager() {
   const { register, handleSubmit, errors, field_name } = useForm();

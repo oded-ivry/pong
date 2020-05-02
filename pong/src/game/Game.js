@@ -1,28 +1,24 @@
 import Ball from './Ball';
 import Player from './Player';
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import styled from 'styled-components';
-import App from '../App';
 
 const ISPC = false;
 const ISUSER = true;
 
-class Game extends Component{
-    constructor(props) {
-        super(props);
-        this.state = {
-        
-
-        }
+class Game {
+    constructor(canvas, getPoints) {
         //singleton
         if(Game.instance) {
             return Game.instance;
         }
         Game.instance = this;
-        
+
+        this.p1Points = 0;
+        this.p2Points = 0;
+
+        this.getPoints = getPoints;
+
         //field
-        this.canvas = document.getElementById("canvas");
+        this.canvas = canvas;
         this.ctxt = this.canvas.getContext('2d');
         this.canvas.width = document.body.clientWidth*0.7;
         this.canvas.height = (window.innerHeight )*0.7;
@@ -36,9 +32,9 @@ class Game extends Component{
     }
     
     start() {
-        this.ball = new Ball();
-        this.pc = new Player(ISPC);
-        this.user = new Player(ISUSER);
+        this.ball = new Ball(this.canvas);
+        this.pc = new Player(ISPC, this.canvas);
+        this.user = new Player(ISUSER, this.canvas);
         window.requestAnimationFrame(this.drawGame.bind(this));
     }
     
@@ -68,18 +64,40 @@ class Game extends Component{
         return false;
     }
 
-    checkEndGame(){
+    resetMiniGame(){
+        this.ball.x = this.canvas.width / 2;
+        this.ball.y = this.canvas.height / 2;
+        this.ball.xDirection = -1;
+        this.ball.yDirection = 1;
+        this.ball.speed = 4;
+    }
+
+    checkMiniGameEnd(){
         //check left & right boundries ( win /lose )
         let rightBorder = this.canvas.width - this.ball.raduis;
         let leftBorder = this.ball.raduis;
         if (this.ball.x > rightBorder){
-            return 'right';
+            this.p1Points++;
+            this.getPoints(this.p1Points, 'Left');
+            this.resetMiniGame();
+            console.log(this.p1Points);
         }
         if(this.ball.x < leftBorder){
-            return 'left';
+            this.p2Points++;
+            this.getPoints(this.p2Points, 'Right');
+            this.resetMiniGame();
+            console.log(this.p2Points);
         }
     }
     
+    checkGameOver(){
+        if (this.p1Points === 3) {
+            return('Left');
+        }else if (this.p2Points === 3) {
+            return('Right');
+        }
+    }
+
     drawGame(){
         //draw field
         this.ctxt.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -104,31 +122,18 @@ class Game extends Component{
         this.pc.drawPlayer();
         this.user.drawPlayer();
         
-        if (this.checkEndGame() === 'right'){
-            console.log('right lost');
-            window.cancelAnimationFrame(this.drawGame.bind(this));
-            ReactDOM.render(
-                <App />,
-              document.getElementById('root')
-            );
-        }else if (this.checkEndGame() === 'left'){
-            console.log('left lost');
-            window.cancelAnimationFrame(this.drawGame.bind(this));
-            window.location.reload();
+        //check minigame
+        this.checkMiniGameEnd();
+        
+        //check gameOver
+        if (this.checkGameOver === 'Left'){
+            console.log('Left end');
+        }else if (this.checkGameOver === 'Right') {
+            console.log('Right end');
         }
         window.requestAnimationFrame(this.drawGame.bind(this));
     }
     
-    render(){
-        return(
-            <Canvas/>
-        )
-    };
 }
 export default Game;
 
-const Canvas = styled.canvas`
-    position:relative;
-    // top:10px;
-    // left:10px;
-`;

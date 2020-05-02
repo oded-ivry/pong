@@ -1,21 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useSelector, useDispatch } from "react-redux";
-import { increment } from "../state/count.slice";
 
-const Counter = () => {
-    const count = useSelector(state => state.count);
-    const dispatch = useDispatch();
-
+const Counter = (props) => {
+    
     return(
-        <CounterElemnt onClick={() => dispatch(increment())}>
-            Player 1 <br></br>
-            Score: {count}
+        <CounterElemnt>
+            {props.name}
+            <br></br>
+            Points: {props.count}
         </CounterElemnt>
     );
 };
 export default Counter;
 
 const CounterElemnt = styled.h2`
-    font-size: calc(2px + 2vmin);
+    font-size: calc(3px + 1.5vmin);
+    // display: flex;
+    // border: solid deepPink 3px;
 `;

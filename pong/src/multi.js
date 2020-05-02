@@ -1,52 +1,73 @@
-import React from 'react';
-import { Link} from "react-router-dom";
+import React, { useRef, useEffect } from 'react';
+import { Link } from "react-router-dom";
 import styled from 'styled-components';
 import Game from '../src/game/Game';
 import Counter from './game/Counter';
+import { useState, useCallback } from 'react';
 
-var gameOn = false;
+function Multi() {
+  const [gameOn, setGameOn] = useState(false);
+  // const [gameOver, setGameOver] = useState(false);
 
-function startGame(){
- gameOn = true;
-}
+  // const [userSpeed, setGameOn] = useState(false);
+  const [p1Name, setp1Name] = useState("Player 1");
+  const [p2Name, setp2Name] = useState("Player 2");
+  const [p1Count, setP1Count] = useState(0);
+  const [p2Count, setP2Count] = useState(0);
 
-function Pager() {
-  return (
+  const canvas = useRef(null);
+  
+  const getPointsFromGame = useCallback((points, player) => {
+    if (player === 'Left') {
+      setP1Count(points);
+    }
+    if (player === 'Right') {
+      setP2Count(points);
+    }
+  },[])
+  
+  const isGameOver = useCallback(player => {
+    if (player === 'Left') {
+      setGameOn(false);
+      console.log('left');
+    }
+    if (player === 'Right') {
+      setGameOn(false);
+      console.log('right');
+    }
+  },[]);
+
+  useEffect( () => { 
+    if(gameOn === true){
+      new Game(canvas.current,getPointsFromGame,isGameOver).start();
+    }//why do I need getPointsFromGame in this array?
+  },[gameOn, getPointsFromGame, isGameOver])
+  
+  const onSubmit = props => {
+    setGameOn(true);
+  };
+
+  if (gameOn){
+    return (
+      <GamePage>
+        <LeftCounter name={p1Name} count={p1Count}/>
+        <RightCounter name={p2Name} count={p2Count}/>
+        <Canvas  ref={canvas}/>
+      </GamePage>
+    );
+  }else{
+    return (
       <Page>
           <Title>Multi Player</Title>
           <Form>
-              <Label>1st player's name:<FormItemInput type='text' id='fpName'/></Label>
-              <Label>2nd player's name:<FormItemInput type='text' id='spName'/></Label>
-              <Label>1st player's speed:<FormItemInput type='number' min="1" max="10" id='fpSpeed'/></Label>
-              <Label>2nd player's speed:<FormItemInput type='number' min="1" max="10" id='spSpeed'/></Label>
+              <Label>1st player's name:<FormItemInput name="p1Name" type='text'
+                                        onChange={event => setp1Name(event.target.value)}/></Label>
+              <Label>2nd player's name:<FormItemInput name="p2Name" type='text'
+                                        onChange={event => setp2Name(event.target.value)}/></Label>
+              <PlyButton onClick={(props) => onSubmit()}>Play!</PlyButton>
           </Form>
-          <PlyButton onClick={() => startGame()}>Play!</PlyButton>
           <StyledLink to="/play">Back</StyledLink>
       </Page>
-  );
-}
-
-function  GameArea() {
-  setTimeout(() => new Game().start(), 1500);
-  return(
-    <div>
-    <Canvas  id="canvas"/>
-    <Counter/>
-    {/* <Counter/> */}
-    </div>
-    );
-  
-  
-}
-
-function Multi() {
-  if (!gameOn){
-    return(
-      GameArea()
-    );
-  }else{
-    return(
-      Pager()
     );
   }
 }
@@ -60,13 +81,11 @@ const Page = styled.div`
 `;
 const Title = styled.h1`
   font-size: calc(5px + 2vmin);
-`
+`;
 const Form = styled.form`
   display: flex;
-  // border: 2px solid pink;
   flex-direction: column;
   justify-content: center;
-  // text-align: center;
   align-items: stretch;
   padding:50px;
   font-size: calc(5px + 2vmin);
@@ -79,7 +98,7 @@ const StyledLink = styled(Link)`
 
 const Label =styled.label`
 padding: 20px;
-`
+`;
 const FormItemInput = styled.input`
   border: none;
   padding: 3px;
@@ -110,4 +129,16 @@ const Canvas = styled.canvas`
     border:solid deepPink 3px;
     top: 20%;
     left: 15%;
+`;
+const GamePage = styled.div`
+  // border:solid deepPink 3px;
+  // display: flex;
+  flex-direction: row;
+  align-content: flex-end;
+`;
+const LeftCounter =styled(Counter)`
+
+`;
+const RightCounter =styled(Counter)`
+
 `;

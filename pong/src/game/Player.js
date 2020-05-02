@@ -1,7 +1,7 @@
 // import Ball from './Ball';
 
 class Player/*  extends PC  */{
-    constructor(isUser) {
+    constructor(isUser, canvas) {
 
         Player.instance = this;
         this.isUser = isUser;
@@ -9,7 +9,7 @@ class Player/*  extends PC  */{
         this.pcSpeed = 20;
         this.userSpeed = 10;
 
-        this.canvas = document.getElementById("canvas");
+        this.canvas = canvas;
         this.ctxt = this.canvas.getContext('2d');
         this.y = this.canvas.height / 2;
         this.speed = this.isUser ? this.userSpeed:this.pcSpeed;

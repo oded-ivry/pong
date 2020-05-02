@@ -3,14 +3,14 @@
 class Ball {
     raduis = 25;
 
-    constructor() {
+    constructor(canvas) {
         //singleton
         if(Ball.instance) {
             return Ball.instance;
         }
         Ball.instance = this;
 
-        this.canvas = document.getElementById("canvas");
+        this.canvas = canvas;
         this.ctxt = this.canvas.getContext('2d');
         this.x = this.canvas.width / 2;
         this.y = this.canvas.height / 2;
