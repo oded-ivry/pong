@@ -5,13 +5,14 @@ import Game from '../src/game/Game';
 import Counter from './game/Counter';
 import { useState, useCallback } from 'react';
 
+const MULTI = 2;
+
 function Multi() {
   const [gameOn, setGameOn] = useState(false);
-  // const [gameOver, setGameOver] = useState(false);
 
-  // const [userSpeed, setGameOn] = useState(false);
   const [p1Name, setp1Name] = useState("Player 1");
   const [p2Name, setp2Name] = useState("Player 2");
+  
   const [p1Count, setP1Count] = useState(0);
   const [p2Count, setP2Count] = useState(0);
 
@@ -29,18 +30,21 @@ function Multi() {
   const isGameOver = useCallback(player => {
     if (player === 'Left') {
       setGameOn(false);
-      console.log('left');
+      console.log('multi left');
     }
     if (player === 'Right') {
       setGameOn(false);
-      console.log('right');
+      console.log('multi right');
     }
+      console.log('isGameOver');
   },[]);
 
   useEffect( () => { 
     if(gameOn === true){
-      new Game(canvas.current,getPointsFromGame,isGameOver).start();
+      new Game(canvas.current, getPointsFromGame, isGameOver, MULTI).start();
+      // isGameOver();
     }//why do I need getPointsFromGame in this array?
+    
   },[gameOn, getPointsFromGame, isGameOver])
   
   const onSubmit = props => {

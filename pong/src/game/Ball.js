@@ -1,7 +1,7 @@
 // import Player from './Player';
 
 class Ball {
-    raduis = 25;
+    raduis = 20;
 
     constructor(canvas) {
         //singleton
@@ -14,10 +14,10 @@ class Ball {
         this.ctxt = this.canvas.getContext('2d');
         this.x = this.canvas.width / 2;
         this.y = this.canvas.height / 2;
-        this.xDirection = -1;
+        this.xDirection = 1;
         this.yDirection = 1;
         this.color = 'red';
-        this.speed = 4;
+        this.speed = 3;
 
         window.addEventListener('resize', () => {
             this.canvas.width = document.body.clientWidth;

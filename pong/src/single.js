@@ -1,124 +1,65 @@
-import React/*,  { createElement } */ from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import styled from 'styled-components';
 import Game from '../src/game/Game';
-import { useForm } from "react-hook-form";
-import { error_messages } from './Error_messages/Error_Messages';
-// import Counter from './game/Counter';
+import Counter from './game/Counter';
+import { useState, useCallback } from 'react';
 
+const SINGLE = 1;
 
-
-var gameOn = false;
-
-/* function startGame(){
- gameOn = true;
-} */
-
-function Pager() {
-  const { register, handleSubmit, errors, field_name } = useForm();
-
-  const get_error_msg = (errors, error_messages) => {
-    const generate = name => {
-      if (errors[name]) {
-        switch (errors[name].type) {
-          case "required":
-            return error_messages[name].required;
-          case "minLength":
-            return error_messages[name].minLength;
-          case "minSpeed":
-            return error_messages[name].min;
-          default:
-            return "";
-        }
-      }
-    };
-
-    if (Array.isArray(field_name)) {
-      for (const name of field_name) {
-        const msg = generate(name);
-        if (msg) return msg;
-      }
-    } else {
-      return generate(field_name);
-    }
-  }
-
-  const onSubmit = data => {
-    console.log(data);
-    // startGame();
-  };
-  
-  return (
-    <Page>
-        <Title>Single Player</Title>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-            <Label>First Name:<FormItemInput 
-                                name="first_name"
-                                placeholder="First name"
-                                ref={register({ required: true, minLength: 2 })}
-                                error_styled={errors.first_name}
-                                onChange={handleSubmit()}/>
-            </Label>
-            <ErrorMsg show={errors.first_name}>
-              {get_error_msg(errors, error_messages, "first_name")}
-            </ErrorMsg>
-            <Label>Last Name:<FormItemInput
-                                name="last_name" 
-                                placeholder="Last name"
-                                ref={register({ required: true, minLength: 2 })}
-                                error_styled={errors.first_name}
-                                onChange={handleSubmit()}/>
-            </Label>
-            <ErrorMsg show={errors.last_name}>
-              {get_error_msg(errors, error_messages, "last_name")}
-            </ErrorMsg>
-            <Label>User speed:<FormItemInput 
-                                name="minSpeed" 
-                                placeholder="Positive numbers only"
-                                ref={register({ required: true, min: 1 })}
-                                error_styled={errors.minSpeed}
-                                onChange={handleSubmit()}/>
-            </Label>
-            <ErrorMsg show={errors.minSpeed}>
-              {get_error_msg(errors, error_messages, "minSpeed")}
-            </ErrorMsg>
-            <Label>PC speed:<FormItemInput 
-                                name="minSpeed" 
-                                placeholder="Positive numbers only"
-                                ref={register({ required: true, min: 1 })}
-                                error_styled={errors.minSpeed}
-                                onChange={handleSubmit()}/>
-            </Label>
-            <ErrorMsg show={errors.minSpeed}>
-              {get_error_msg(errors, error_messages, "minSpeed")}
-            </ErrorMsg>
-        </Form>
-        <PlyButton  type="submit"/* onClick={() => startGame()} */>Play!</PlyButton>
-         <StyledLink to="/play">Back</StyledLink>
-    </Page>
-);
-}
-
-function  GameArea() {
-  setTimeout(() => new Game().start(), 1500);
-  return(
-    <div>
-    <Canvas  id="canvas"/>
-    {/* <Counter/>
-    <Counter/> */}
-    </div>
-    );
-  
-}
-  
 function Single() {
+  const [gameOn, setGameOn] = useState(false);
+
+  const [p1Name, setp1Name] = useState("Player 1");
+  const p2Name = 'PC';
+  
+  const [p1Count, setP1Count] = useState(0);
+  const [p2Count, setP2Count] = useState(0);
+
+  const canvas = useRef(null);
+  
+  const getPointsFromGame = useCallback((points, player) => {
+    if (player === 'Left') {
+      setP1Count(points);
+    }
+    if (player === 'Right') {
+      setP2Count(points);
+    }
+  },[])
+  
+  const isGameOver = useCallback(player => {
+      console.log('isGameOver');
+  },[]);
+
+  useEffect( () => { 
+    if(gameOn === true){
+      new Game(canvas.current, getPointsFromGame, isGameOver, SINGLE).start();
+    }//why do I need getPointsFromGame in this array?
+  },[gameOn, getPointsFromGame, isGameOver])
+  
+  const onSubmit = props => {
+    setGameOn(true);
+  };
+
   if (gameOn){
-    return(
-      GameArea()
+    return (
+      <GamePage>
+        <LeftCounter name={p1Name} count={p1Count}/>
+        <RightCounter name={p2Name} count={p2Count}/>
+        <Canvas  ref={canvas}/>
+      </GamePage>
     );
   }else{
-    return(
-      Pager()
+    return (
+      <Page>
+          <Title>Single Player</Title>
+          <Form>
+              <Label>Player's name:<FormItemInput name="p1Name" type='text'
+                                        onChange={event => setp1Name(event.target.value)}/></Label>
+              <PlyButton onClick={(props) => onSubmit()}>Play!</PlyButton>
+          </Form>
+          <StyledLink to="/play">Back</StyledLink>
+      </Page>
     );
   }
 }
@@ -132,13 +73,11 @@ const Page = styled.div`
 `;
 const Title = styled.h1`
   font-size: calc(5px + 2vmin);
-`
+`;
 const Form = styled.form`
   display: flex;
-  // border: 2px solid pink;
   flex-direction: column;
   justify-content: center;
-  // text-align: center;
   align-items: stretch;
   padding:50px;
   font-size: calc(5px + 2vmin);
@@ -151,15 +90,15 @@ const StyledLink = styled(Link)`
 
 const Label =styled.label`
 padding: 20px;
-`
+`;
 const FormItemInput = styled.input`
   border: none;
   padding: 3px;
-  color: mintcream;
+  color: white;
   background-color: #282c34;
   font-size: calc(5px + 2vmin);
   font-family: 'Press Start 2P', cursive;
-  border-bottom: solid 3px mintcream;
+  border-bottom: solid 3px white;
 `;
 
 const PlyButton = styled.button`
@@ -176,12 +115,22 @@ const PlyButton = styled.button`
     font-size: calc(20px + 2vmin);;
   }
 `;
+
 const Canvas = styled.canvas`
     position: absolute;
     border:solid deepPink 3px;
     top: 20%;
     left: 15%;
 `;
-const ErrorMsg  =styled(Label)`
-  color: red;
-`
+const GamePage = styled.div`
+  // border:solid deepPink 3px;
+  // display: flex;
+  flex-direction: row;
+  align-content: flex-end;
+`;
+const LeftCounter =styled(Counter)`
+
+`;
+const RightCounter =styled(Counter)`
+
+`;

@@ -1,27 +1,27 @@
 import Ball from './Ball';
 import Player from './Player';
 
-const ISPC = false;
-const ISUSER = true;
-
 class Game {
-    constructor(canvas, getPoints) {
+    constructor(canvas, getPoints, isGameOver, gameType) {
         //singleton
         if(Game.instance) {
             return Game.instance;
         }
         Game.instance = this;
 
+        this.gameType = gameType;
+
         this.p1Points = 0;
         this.p2Points = 0;
-
+        
         this.getPoints = getPoints;
+        this.isGameOver = isGameOver;
 
         //field
         this.canvas = canvas;
         this.ctxt = this.canvas.getContext('2d');
-        this.canvas.width = document.body.clientWidth*0.7;
-        this.canvas.height = (window.innerHeight )*0.7;
+        this.canvas.width = document.body.clientWidth * 0.7;
+        this.canvas.height = window.innerHeight * 0.7;
         this.halfLinePos = this.canvas.width / 2;
         
         window.addEventListener('resize', () => {
@@ -33,8 +33,13 @@ class Game {
     
     start() {
         this.ball = new Ball(this.canvas);
-        this.pc = new Player(ISPC, this.canvas);
-        this.user = new Player(ISUSER, this.canvas);
+        if (this.gameType === 1) {
+            this.user = new Player('P1', this.canvas);
+            this.pc = new Player('PC', this.canvas, this.ball);
+        }else if (this.gameType === 2) {
+            this.user = new Player('P1', this.canvas);
+            this.pc = new Player('P2', this.canvas);
+        }
         window.requestAnimationFrame(this.drawGame.bind(this));
     }
     
@@ -126,9 +131,13 @@ class Game {
         this.checkMiniGameEnd();
         
         //check gameOver
-        if (this.checkGameOver === 'Left'){
+        if (this.checkGameOver() === 'Left'){
+            this.isGameOver('Left');
+            // document.removeChild(this.canvas);
             console.log('Left end');
-        }else if (this.checkGameOver === 'Right') {
+        }else if (this.checkGameOver() === 'Right') {
+            this.isGameOver('Right');
+            // document.removeChild(this.canvas);
             console.log('Right end');
         }
         window.requestAnimationFrame(this.drawGame.bind(this));
