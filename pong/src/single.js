@@ -9,6 +9,7 @@ const SINGLE = 1;
 
 function Single() {
   const [gameOn, setGameOn] = useState(false);
+  const [game, setGame] = useState(null);
 
   const [p1Name, setp1Name] = useState("Player 1");
   const p2Name = 'PC';
@@ -28,14 +29,35 @@ function Single() {
   },[])
   
   const isGameOver = useCallback(player => {
-      console.log('isGameOver');
+    if (player === 'Left') {
+      setGameOn(false);
+      console.log('single left');
+    }
+    if (player === 'Right') {
+      setGameOn(false);
+      console.log('single right');
+    }
+      console.log('isGameOver invoked');
   },[]);
 
   useEffect( () => { 
     if(gameOn === true){
-      new Game(canvas.current, getPointsFromGame, isGameOver, SINGLE).start();
-    }//why do I need getPointsFromGame in this array?
-  },[gameOn, getPointsFromGame, isGameOver])
+      let thisGame = game;
+      if (!thisGame){
+         thisGame = new Game(canvas.current, getPointsFromGame, isGameOver, SINGLE)
+      }
+      thisGame.start();
+      setGame(thisGame);
+    }else if (game) {
+      game.stop();
+      setGameOn(false);
+    }
+    return () => {
+      console.log('umounting');
+      if (game) {game.stop()}
+    }
+      //why do I need getPointsFromGame in this array?
+  },[gameOn, getPointsFromGame, isGameOver,game])
   
   const onSubmit = props => {
     setGameOn(true);

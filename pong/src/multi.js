@@ -9,6 +9,7 @@ const MULTI = 2;
 
 function Multi() {
   const [gameOn, setGameOn] = useState(false);
+  const [game, setGame] = useState(null);
 
   const [p1Name, setp1Name] = useState("Player 1");
   const [p2Name, setp2Name] = useState("Player 2");
@@ -36,16 +37,27 @@ function Multi() {
       setGameOn(false);
       console.log('multi right');
     }
-      console.log('isGameOver');
+      console.log('isGameOver invoked');
   },[]);
 
   useEffect( () => { 
     if(gameOn === true){
-      new Game(canvas.current, getPointsFromGame, isGameOver, MULTI).start();
-      // isGameOver();
-    }//why do I need getPointsFromGame in this array?
-    
-  },[gameOn, getPointsFromGame, isGameOver])
+      let thisGame = game;
+      if (!thisGame){
+         thisGame = new Game(canvas.current, getPointsFromGame, isGameOver, MULTI)
+      }
+      thisGame.start();
+      setGame(thisGame);
+    }else if (game) {
+      game.stop();
+      setGameOn(false);
+    }
+    return () => {
+      console.log('umounting');
+      if (game) {game.stop()}
+    }
+      //why do I need getPointsFromGame in this array?
+  },[gameOn, getPointsFromGame, isGameOver,game])
   
   const onSubmit = props => {
     setGameOn(true);

@@ -8,7 +8,7 @@ class Game {
             return Game.instance;
         }
         Game.instance = this;
-
+        this.isRunning = false;
         this.gameType = gameType;
 
         this.p1Points = 0;
@@ -39,15 +39,23 @@ class Game {
         }else if (this.gameType === 2) {
             this.user = new Player('P1', this.canvas);
             this.pc = new Player('P2', this.canvas);
+        }else if (this.gameType === 3) {
+            this.user = new Player('P1', this.canvas);
+            this.pc = new Player('P2', this.canvas);
         }
+        this.isRunning = true;
         window.requestAnimationFrame(this.drawGame.bind(this));
     }
     
+    stop() {
+        this.isRunning = false;
+    }
+
     checkTouchRightPlayer(){
         let userX = this.canvas.width - this.user.playerWidth;
         let touchX = (this.ball.x + this.ball.raduis > userX);
-        let inYTop = (this.ball.y > this.user.y);
-        let inYBottom = (this.ball.y < this.user.y + this.user.playerSize);
+        let inYTop = (this.ball.y - this.ball.raduis > this.user.y);
+        let inYBottom = (this.ball.y + this.ball.raduis < this.user.y + this.user.playerSize);
         
         if (touchX && inYBottom && inYTop){
             return true;
@@ -59,8 +67,8 @@ class Game {
     checkTouchLeftlayer(){
         let pcX = this.user.playerWidth;
         let touchX = (this.ball.x - this.ball.raduis < pcX);
-        let inYTop = (this.ball.y > this.pc.y);
-        let inYBottom = (this.ball.y < this.pc.y + this.pc.playerSize);
+        let inYTop = (this.ball.y - this.ball.raduis > this.pc.y);
+        let inYBottom = (this.ball.y + this.ball.raduis< this.pc.y + this.pc.playerSize);
 
         if (touchX && inYBottom && inYTop){
             return true;
@@ -131,16 +139,19 @@ class Game {
         this.checkMiniGameEnd();
         
         //check gameOver
-        if (this.checkGameOver() === 'Left'){
+        if (this.checkGameOver() === 'Left') {
             this.isGameOver('Left');
-            // document.removeChild(this.canvas);
             console.log('Left end');
         }else if (this.checkGameOver() === 'Right') {
             this.isGameOver('Right');
-            // document.removeChild(this.canvas);
             console.log('Right end');
         }
-        window.requestAnimationFrame(this.drawGame.bind(this));
+        if (this.isRunning === true) {
+            window.requestAnimationFrame(this.drawGame.bind(this));
+        }else if (this.isRunning === false) {
+            this.stop();
+        }
+            
     }
     
 }

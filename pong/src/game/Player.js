@@ -1,7 +1,7 @@
 // import Ball from './Ball';
 
-const pcSpeed = 15;
-const userSpeed = 10;
+const pcSpeed = 8;
+const userSpeed = 5;
 
 class Player {
     constructor(userType, canvas, ball) {
@@ -106,10 +106,10 @@ class Player {
             }
         } 
         else if (this.userType === 'PC'){
-            if (this.y > topBorder && this.y > this.ball.y){
+            if ( (this.y  > topBorder) && (this.y + this.playerSize / 2) > this.ball.y){
                 this.y -= this.speed;
             }
-            if(this.y < bottomBorder &&  this.y < this.ball.y ){ 
+            if(this.y < bottomBorder &&  (this.y + this.playerSize / 2) < this.ball.y ){ 
                 this.y += this.speed;
             }
         }       
